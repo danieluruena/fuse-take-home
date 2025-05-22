@@ -1,0 +1,19 @@
+{
+  "name": "sendreport",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "GPL-3.0-or-later",
+  "description": "",
+  "dependencies": {
+    "aws-sdk": "^2.1692.0"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^0.0.42",
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3"
+  }
+}
