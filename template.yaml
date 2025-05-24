@@ -1,0 +1,108 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  Stage:
+    Type: String
+    Default: local
+    Description: The stage of the application (e.g., dev, prod)
+
+  StocksApiUrl:
+    Type: String
+    Description: The URL of the stocks API
+
+  StocksApiKeySecret:
+    Type: String
+    Description: The secret name for the stocks API key
+
+  StocksApiKey:
+    Type: String
+    Description: The API key for the stocks API
+
+Globals:
+  Function:
+    MemorySize: 1024
+    LoggingConfig:
+      LogFormat: JSON
+
+Resources:
+
+  ## DynamoDB Tables
+  StocksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: StocksTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: symbol
+          AttributeType: S
+      KeySchema:
+        - AttributeName: symbol
+          KeyType: HASH
+
+  ## Layer
+  # TakeHomeCoreLayer:
+  #   Type: AWS::Serverless::LayerVersion
+  #   Properties:
+  #     LayerName: TakeHomeCoreLayer
+  #     Description: Core layer for the Take Home project
+  #     ContentUri: layer/
+  #     CompatibleRuntimes:
+  #       - nodejs22.x
+
+  ## Functions
+  GetStocksFunction:
+    Type: AWS::Serverless::Function 
+    Connectors:
+      StocksTableConnection:
+        Properties:
+          Destination:
+            Id: StocksTable
+          Permissions:
+            - Read
+            - Write
+    Properties:
+      CodeUri: apps/get-stocks/dist
+      Handler: index.handler
+      Runtime: nodejs22.x
+      Timeout: 300
+      Architectures:
+        - x86_64
+      Tracing: Active
+      # Layers:
+      #   - !Ref TakeHomeCoreLayer
+      Environment:
+        Variables:
+          STAGE: !Ref Stage
+          STOCKS_API_URL: !Ref StocksApiUrl
+          STOCKS_API_KEY_SECRET: !Ref StocksApiKeySecret
+          STOCKS_API_KEY: !Ref StocksApiKey
+          STOCKS_TABLE: !Ref StocksTable
+          LOG_LEVEL: INFO
+      Events:
+        ScheduledEvent:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: rate(5 minutes)
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - secretsmanager:GetSecretValue
+              Resource: !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${StocksApiKeySecret}
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2023
+        Sourcemap: true 
+        EntryPoints:
+        - index.js
+
+Outputs:
+  GetStocksFunction:
+    Description: "Get Stocks Function ARN"
+    Value: !GetAtt GetStocksFunction.Arn
+  StocksTable:
+    Description: "Stocks Table Name"
+    Value: !Ref StocksTable

@@ -1,20 +1,24 @@
 {
-  "name": "getstocks",
+  "name": "get-stocks",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -p tsconfig.json",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "GPL-3.0-or-later",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.816.0",
+    "@aws-sdk/util-dynamodb": "^3.816.0",
+    "@shared/take-home-core": "file:../../libs/take-home-core",
     "aws-sdk": "^2.1692.0",
-    "axios": "^1.9.0"
+    "axios": "^1.9.0",
+    "pino": "^9.7.0"
   },
   "devDependencies": {
     "@types/aws-sdk": "^0.0.42",
-    "@types/axios": "^0.9.36",
     "@types/node": "^22.15.21",
     "typescript": "^5.8.3"
   }

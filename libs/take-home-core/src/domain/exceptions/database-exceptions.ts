@@ -1,0 +1,29 @@
+import { TechnicalException } from './base';
+
+export abstract class DatabaseException extends TechnicalException {
+    abstract readonly code: string;
+}
+
+export class InsertOperationFailed<T> extends DatabaseException {
+    readonly code = 'INSERT_OPERATION_FAILED';
+
+    constructor(entity: T | T[]) {
+        super(`An error occurred while inserting in the database.`, { entity });
+    }
+}
+
+export class UpdateOperationFailed<T> extends DatabaseException {
+    readonly code = 'UPDATE_OPERATION_FAILED';
+
+    constructor(entity: T) {
+        super(`An error occurred while updating in the database.`, { entity });
+    }
+}
+
+export class DeleteOperationFailed<T> extends DatabaseException {
+    readonly code = 'DELETE_OPERATION_FAILED';
+
+    constructor(entity: T) {
+        super(`An error occurred while deleting in the database.`, { entity });
+    }
+}
