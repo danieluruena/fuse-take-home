@@ -4,7 +4,7 @@ ifdef STAGE
 	endif
 endif
 
-build-lambdas:
+build:
 	cd libs/take-home-core && npm run build
 	cd apps/get-stocks && npm run build
 

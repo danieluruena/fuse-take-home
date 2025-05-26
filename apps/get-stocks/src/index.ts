@@ -1,9 +1,9 @@
-import { AxiosClient, DynamoDBRepository, PinoLogger } from '@shared/take-home-core';
+import { AxiosClient, StocksDynamoDBRepository, PinoLogger } from '@shared/take-home-core';
 import { FetchAndStoreStocksUseCase } from './application/use-cases/fetch-and-store-stocks';
 
 const logger = new PinoLogger();
 const axiosClient = new AxiosClient(logger);
-const stocksRepository = new DynamoDBRepository();
+const stocksRepository = new StocksDynamoDBRepository();
 const useCase = new FetchAndStoreStocksUseCase(axiosClient, stocksRepository, logger);
 
 export const handler = async () => {
@@ -12,5 +12,5 @@ export const handler = async () => {
   logger.info('Finished function to get stocks...');
   return {
     message: 'successfully executed'
-  }
-}
+  };
+};

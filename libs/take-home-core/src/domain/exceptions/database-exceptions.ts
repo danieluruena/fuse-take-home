@@ -35,3 +35,11 @@ export class GetOperationFailed extends DatabaseException {
         super(`An error occurred while retrieving from the database.`);
     }
 }
+
+export class ItemNotFoundException<T> extends DatabaseException {
+    readonly code = 'ITEM_NOT_FOUND';
+
+    constructor(message: string) {
+        super(message);
+    }
+}

@@ -40,6 +40,22 @@ export const getJwtSecret = (): string | undefined => {
     return process.env.JWT_SECRET;
 }
 
+export const getPortfolioTableName = (): string => {
+    const tableName = process.env.PORTFOLIO_TABLE;
+    if (!tableName) {
+        throw new MisconfigurationException('PORTFOLIO_TABLE environment variable is not set.');
+    }
+    return tableName;
+}
+
+export const getUsersTableName = (): string => {
+    const tableName = process.env.USERS_TABLE;
+    if (!tableName) {
+        throw new MisconfigurationException('USERS_TABLE environment variable is not set.');
+    }
+    return tableName;
+}
+
 export const getStage = (): string => {
     const stage = process.env.STAGE;
     if (!stage) {

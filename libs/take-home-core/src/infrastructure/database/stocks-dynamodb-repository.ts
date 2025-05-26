@@ -15,7 +15,7 @@ import { PaginatedStocks, Stock } from '../../domain/entities/stock';
 import { getStocksTableName, isLocalEnv } from '../../utils/environment-variables';
 
 
-export class DynamoDBRepository implements StocksRepository {
+export class StocksDynamoDBRepository implements StocksRepository {
     private readonly client: DynamoDBClient;
     private readonly tableName: string;
 

@@ -40,15 +40,36 @@ Resources:
         - AttributeName: symbol
           KeyType: HASH
 
-  ## Layer
-  # TakeHomeCoreLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     LayerName: TakeHomeCoreLayer
-  #     Description: Core layer for the Take Home project
-  #     ContentUri: layer/
-  #     CompatibleRuntimes:
-  #       - nodejs22.x
+  PortfolioTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: PortfolioTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: UsersTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        - IndexName: email-index
+          KeySchema:
+            - AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
 
   ## Functions
   GetStocksFunction:
@@ -69,8 +90,6 @@ Resources:
       Architectures:
         - x86_64
       Tracing: Active
-      # Layers:
-      #   - !Ref TakeHomeCoreLayer
       Environment:
         Variables:
           STAGE: !Ref Stage

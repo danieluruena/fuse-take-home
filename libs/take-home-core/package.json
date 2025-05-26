@@ -11,10 +11,12 @@
     "@aws-sdk/util-dynamodb": "^3.816.0",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.9.0",
+    "bcrypt": "^6.0.0",
     "pino": "^9.7.0"
   },
   "devDependencies": {
     "@types/aws-sdk": "^0.0.42",
+    "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.15.21",
     "typescript": "^5.8.3"
   }
