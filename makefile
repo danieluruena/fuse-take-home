@@ -26,3 +26,6 @@ run-local-get-stocks: build-lambdas
 	sam build
 	sam local invoke GetStocksFunction \
 		--env-vars envs/local.json
+
+start-api:
+	cd apps/api/ && npm run start:dev

@@ -30,8 +30,7 @@ export class AxiosClient implements HttpClient {
         let apiKey = getStocksApiKey();
         
         if (!isLocalEnv()) {
-            const stocksApiKeySecretName = getStocksApiKeySecretName();
-            const secretsManager = new SecretsManagerProvider(stocksApiKeySecretName);
+            const secretsManager = new SecretsManagerProvider();
             apiKey = await secretsManager.getStocksApiKey();
         }
 

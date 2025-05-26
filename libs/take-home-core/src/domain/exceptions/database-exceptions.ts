@@ -27,3 +27,11 @@ export class DeleteOperationFailed<T> extends DatabaseException {
         super(`An error occurred while deleting in the database.`, { entity });
     }
 }
+
+export class GetOperationFailed extends DatabaseException {
+    readonly code = 'GET_OPERATION_FAILED';
+
+    constructor() {
+        super(`An error occurred while retrieving from the database.`);
+    }
+}

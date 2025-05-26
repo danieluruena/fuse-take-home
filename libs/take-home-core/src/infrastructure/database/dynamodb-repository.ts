@@ -1,9 +1,17 @@
-import { BatchWriteItemCommand, BatchWriteItemCommandInput, DynamoDBClient, DynamoDBClientConfig, PutItemCommand } from '@aws-sdk/client-dynamodb';
-import { marshall } from '@aws-sdk/util-dynamodb';
+import { 
+    BatchWriteItemCommand, 
+    BatchWriteItemCommandInput, 
+    DynamoDBClient, 
+    DynamoDBClientConfig, 
+    PutItemCommand,
+    ScanCommand,
+    ScanCommandInput,
+} from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { StocksRepository } from '../../domain/ports/repository';
 import { splitIntoChunks } from '../../utils/split-into-chunks';
-import { InsertOperationFailed } from '../../domain/exceptions/database-exceptions';
-import { Stock } from '../../domain/entities/stock';
+import { GetOperationFailed, InsertOperationFailed } from '../../domain/exceptions/database-exceptions';
+import { PaginatedStocks, Stock } from '../../domain/entities/stock';
 import { getStocksTableName, isLocalEnv } from '../../utils/environment-variables';
 
 
@@ -62,6 +70,33 @@ export class DynamoDBRepository implements StocksRepository {
             } catch (error) {
                 throw new InsertOperationFailed<Stock>(items);
             }
+        }
+    }
+
+    async getStocks(nextToken?: string): Promise<PaginatedStocks> {
+        try {
+            const ExclusiveStartKey = nextToken ? JSON.parse(atob(nextToken)) : undefined;
+            const params: ScanCommandInput = {
+                TableName: this.tableName,
+                Limit: 10,
+                ExclusiveStartKey
+            };
+            let results = await this.client.send(new ScanCommand(params))
+            const stocks: Stock[] = results.Items?.map(item => unmarshall(item) as Stock) || [];
+
+            if (results.Count === 10 && results.LastEvaluatedKey) {
+                const nextToken = btoa(JSON.stringify(results.LastEvaluatedKey));
+                return {
+                    items: stocks,
+                    nextToken
+                }
+            }
+
+            return {
+                items: stocks
+            }
+        } catch (error) {
+            throw new GetOperationFailed();
         }
     }
 }

@@ -13,3 +13,8 @@ export type VendorResponse = {
         nextToken?: string
     }
 }
+
+export type PaginatedStocks = {
+    items: Stock[]
+    nextToken?: string
+}

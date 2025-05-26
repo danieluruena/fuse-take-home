@@ -28,6 +28,18 @@ export const getStocksTableName = (): string => {
     return tableName;
 }
 
+export const getJwtSecretName = (): string => {
+    const secretName = process.env.JWT_SECRET_NAME;
+    if (!secretName) {
+        throw new MisconfigurationException('JWT_SECRET_NAME environment variable is not set.')
+    }
+    return secretName;
+}
+
+export const getJwtSecret = (): string | undefined => {
+    return process.env.JWT_SECRET;
+}
+
 export const getStage = (): string => {
     const stage = process.env.STAGE;
     if (!stage) {

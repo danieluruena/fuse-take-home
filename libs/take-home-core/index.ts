@@ -1,5 +1,6 @@
 // Domain entities
 export * from './src/domain/entities/stock';
+export * from './src/domain/entities/token';
 
 // Domain ports
 export * from './src/domain/ports/secrets-provider';

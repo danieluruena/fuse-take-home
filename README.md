@@ -16,10 +16,12 @@ You'll find the following main directories in this repo:
 ```
 /
 ├──apps
-|   ├──api          <---- API to receive user requests
-|   ├──get-stocks   <---- Lambda function to get stocks every 5 mins
-|   ├──send-report  <---- Lambda function to get all transactions and send the daily report to the configured email
-├──envs             <---- Files with environment variables
+|   ├──api              <---- API to receive user requests
+|   ├──get-stocks       <---- Lambda function to get stocks every 5 mins
+|   ├──send-report      <---- Lambda function to get all transactions and send the daily report to the configured email
+├──libs
+|   ├──take-home-core   <---- Shared library with common code
+├──envs                 <---- Files with environment variables
 ```
 
 ## Prepare develop environment
