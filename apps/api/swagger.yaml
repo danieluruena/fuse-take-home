@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: Stocks API
+  version: 1.0.0
+  description: API para gestionar usuarios, acciones y portafolios
+
+servers:
+  - url: https://your-api-domain.com
+    description: API de Producción
+
+paths:
+  /user/signup:
+    post:
+      summary: Crear un nuevo usuario
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '201':
+          description: Usuario creado correctamente
+        '400':
+          description: Error de validación
+
+  /auth/login:
+    post:
+      summary: Iniciar sesión
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        '401':
+          description: Credenciales inválidas
+
+  /stocks:
+    get:
+      summary: Consultar acciones disponibles
+      tags:
+        - Stocks
+      responses:
+        '200':
+          description: Lista de acciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    symbol:
+                      type: string
+                    price:
+                      type: number
+
+  /portfolio:
+    get:
+      summary: Consultar portafolio del usuario autenticado
+      tags:
+        - Portfolio
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Portafolio del usuario
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  stocks:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        symbol:
+                          type: string
+                        quantity:
+                          type: integer
+                        name:
+                          type: string
+                        sector:
+                          type: string
+        '401':
+          description: Token inválido o ausente
+
+  /stocks/buy:
+    post:
+      summary: Comprar acciones
+      tags:
+        - Stocks
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                symbol:
+                  type: string
+                quantity:
+                  type: integer
+                price:
+                  type: integer
+              required:
+                - symbol
+                - quantity
+                - price
+      responses:
+        '200':
+          description: Compra realizada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '400':
+          description: Datos inválidos
+        '401':
+          description: Token inválido o ausente
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

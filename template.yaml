@@ -117,8 +117,8 @@ Resources:
             - Read
             - Write
     Properties:
-      CodeUri: apps/get-stocks/dist
-      Handler: index.handler
+      CodeUri: apps/get-stocks
+      Handler: src/index.handler
       Runtime: nodejs22.x
       Timeout: 300
       Architectures:
@@ -151,7 +151,7 @@ Resources:
         Target: es2023
         Sourcemap: true 
         EntryPoints:
-        - index.js
+        - src/index.ts
 
 Outputs:
   GetStocksFunction:
