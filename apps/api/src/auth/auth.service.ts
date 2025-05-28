@@ -10,8 +10,8 @@ import {
   TokenPayload,
   User,
   UsersRepository,
-} from '@shared/take-home-core';
-import { TOKENS } from 'src/shared/tokens';
+} from '@danieluruena/take-home-core';
+import { TOKENS } from '../shared/tokens';
 
 @Injectable()
 export class AuthService {

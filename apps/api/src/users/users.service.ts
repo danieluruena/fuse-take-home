@@ -1,12 +1,19 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import {
   EncryptionProvider,
   ItemNotFoundException,
   Logger,
+  Portfolio,
+  PortfolioRepository,
   User,
   UsersRepository,
-} from '@shared/take-home-core';
-import { TOKENS } from 'src/shared/tokens';
+} from '@danieluruena/take-home-core';
+import { TOKENS } from '../shared/tokens';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +22,8 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
     @Inject(TOKENS.ENCRYPTION_PROVIDER)
     private readonly encryptionProvider: EncryptionProvider,
+    @Inject(TOKENS.PORTFOLIO_REPOSITORY)
+    private readonly portfolioRepository: PortfolioRepository,
     @Inject(TOKENS.LOGGER)
     private readonly logger: Logger,
   ) {}
@@ -31,6 +40,14 @@ export class UsersService {
     }
   }
 
+  private async createUserPortfolio(userId: string): Promise<void> {
+    const portfolio: Portfolio = {
+      userId,
+      stocks: [],
+    };
+    await this.portfolioRepository.savePortfolio(portfolio);
+  }
+
   async createUser(email: string, password: string): Promise<void> {
     if (await this.userExists(email)) {
       this.logger.info(`User with email ${email} already exists`);
@@ -44,7 +61,19 @@ export class UsersService {
       password: await this.encryptionProvider.encrypt(password),
       createdAt: currentDate.toISOString(),
     };
-    await this.usersRepository.saveUser(user);
+
+    try {
+      await this.createUserPortfolio(user.userId);
+      await this.usersRepository.saveUser(user);
+    } catch (error) {
+      await this.portfolioRepository.deletePortfolio(user.userId);
+      this.logger.error(
+        `Failed to create user portfolio for user ${user.userId}: ${error.message}`,
+      );
+      throw new InternalServerErrorException(
+        'Somethin went wrong while creating user.',
+      );
+    }
     this.logger.info(`User created with id: ${user.userId}`);
   }
 }

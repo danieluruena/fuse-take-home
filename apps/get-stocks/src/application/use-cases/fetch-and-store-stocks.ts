@@ -1,26 +1,26 @@
 import { 
+    getStocksPath,
     HttpClient, 
     Logger, 
     Stock, 
     StocksRepository, 
     UnexpectedException, 
     VendorResponse 
-} from '@shared/take-home-core';
+} from '@danieluruena/take-home-core';
 
 export class FetchAndStoreStocksUseCase {
-    private readonly stocksPath: string = '/stocks';
     
     constructor(private httpClient: HttpClient, private stockRepository: StocksRepository, private logger: Logger) {}
 
     async* fetchStocks(): AsyncGenerator<Stock[]> {
         this.logger.info('Fetching stocks from vendor...');
         try {
-            this.httpClient.configure();
+            await this.httpClient.configure();
             let nextToken: string | undefined = undefined;
             let params: Record<string, string> = {};
 
             do {
-                const response = await this.httpClient.get<VendorResponse>(this.stocksPath, { params });
+                const response = await this.httpClient.get<VendorResponse>(getStocksPath(), { params });
                 yield response.data.items;
                 nextToken = response.data.nextToken;
                 if (nextToken) {

@@ -19,6 +19,11 @@ Parameters:
     Type: String
     Description: The API key for the stocks API
 
+  StocksPath:
+    Type: String
+    Default: /stocks
+    Description: The path to the stocks API endpoint
+
 Globals:
   Function:
     MemorySize: 1024
@@ -60,6 +65,8 @@ Resources:
       AttributeDefinitions:
         - AttributeName: userId
           AttributeType: S
+        - AttributeName: email
+          AttributeType: S
       KeySchema:
         - AttributeName: userId
           KeyType: HASH
@@ -68,6 +75,33 @@ Resources:
           KeySchema:
             - AttributeName: email
               KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+
+  TransactionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: TransactionsTable
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
+        - AttributeName: status
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: createdAt
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: status-index
+          KeySchema:
+            - AttributeName: status
+              KeyType: HASH
+            - AttributeName: createdAt
+              KeyType: RANGE
           Projection:
             ProjectionType: ALL
 
@@ -96,6 +130,7 @@ Resources:
           STOCKS_API_URL: !Ref StocksApiUrl
           STOCKS_API_KEY_SECRET: !Ref StocksApiKeySecret
           STOCKS_API_KEY: !Ref StocksApiKey
+          STOCKS_PATH: !Ref StocksPath
           STOCKS_TABLE: !Ref StocksTable
           LOG_LEVEL: INFO
       Events:

@@ -44,7 +44,7 @@ export class UsersDynamoDBRepository implements UsersRepository {
         }
     }
 
-    async getUser(userId: string): Promise<User> {
+    async getUser(userId: string): Promise<User | undefined> {
         const params: QueryCommandInput = {
             TableName: this.tableName,
             KeyConditionExpression: 'userId = :userId',
@@ -55,7 +55,7 @@ export class UsersDynamoDBRepository implements UsersRepository {
         try {
             const response = await this.client.send(new QueryCommand(params));
             if (!response.Items || response.Items.length === 0) {
-                throw new ItemNotFoundException(`User with ID ${userId} not found.`);
+                return;
             }
 
             return unmarshall(response.Items[0]) as User;
@@ -64,7 +64,7 @@ export class UsersDynamoDBRepository implements UsersRepository {
         }
     }
 
-    async getUserByEmail(email: string): Promise<User> {
+    async getUserByEmail(email: string): Promise<User | undefined> {
         const params: QueryCommandInput = {
             TableName: this.tableName,
             IndexName: 'email-index',
@@ -76,7 +76,7 @@ export class UsersDynamoDBRepository implements UsersRepository {
         try {
             const response = await this.client.send(new QueryCommand(params));
             if (!response.Items || response.Items.length === 0) {
-                throw new ItemNotFoundException(`User with email ${email} not found.`);
+                return;
             }
 
             return unmarshall(response.Items[0]) as User;

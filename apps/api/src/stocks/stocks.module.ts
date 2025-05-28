@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { StocksController } from './stocks.controller';
 import { StocksService } from './stocks.service';
 import {
+  AxiosClient,
   PinoLogger,
   PortfolioDynamoDBRepository,
   StocksDynamoDBRepository,
-} from '@shared/take-home-core';
+  TransactionsDynamoDBRepository,
+} from '@danieluruena/take-home-core';
 import { TOKENS } from '../shared/tokens';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [AuthModule],
@@ -20,6 +22,16 @@ import { AuthModule } from 'src/auth/auth.module';
       useClass: PortfolioDynamoDBRepository,
     },
     { provide: TOKENS.LOGGER, useClass: PinoLogger },
+    {
+      provide: TOKENS.HTTP_CLIENT,
+      useFactory: () => {
+        return new AxiosClient(new PinoLogger());
+      },
+    },
+    {
+      provide: TOKENS.TRANSACTIONS_REPOSITORY,
+      useClass: TransactionsDynamoDBRepository,
+    },
   ],
 })
 export class StocksModule {}

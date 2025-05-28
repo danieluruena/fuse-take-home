@@ -21,6 +21,7 @@ deploy:
 	        Stage=$(STAGE) \
 			StocksApiUrl=$(STOCKS_API_URL) \
 			StocksApiKeySecret=$(STOCKS_API_KEY_SECRET) \
+			StocksPath=$(STOCKS_PATH) 
 
 run-local-get-stocks: build-lambdas
 	sam build
@@ -29,3 +30,11 @@ run-local-get-stocks: build-lambdas
 
 start-api:
 	cd apps/api/ && npm run start:dev
+
+build-api:
+	cd libs/take-home-core && npm run build
+	cd apps/api && npm install && npm run build
+
+build-api-image:
+	cp ./envs/$(STAGE).env apps/api/.env
+	cd apps/api && docker build --build-arg NPM_TOKEN=$(NPM_TOKEN) -t take-home-api:latest .

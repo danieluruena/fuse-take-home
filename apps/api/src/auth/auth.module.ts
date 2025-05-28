@@ -3,7 +3,7 @@ import {
   BcryptEncryptor,
   PinoLogger,
   UsersDynamoDBRepository,
-} from '@shared/take-home-core';
+} from '@danieluruena/take-home-core';
 import { AuthService } from './auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';

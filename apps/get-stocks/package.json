@@ -12,7 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.816.0",
     "@aws-sdk/util-dynamodb": "^3.816.0",
-    "@shared/take-home-core": "file:../../libs/take-home-core",
+    "@danieluruena/take-home-core": "^1.0.0",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.9.0",
     "pino": "^9.7.0"

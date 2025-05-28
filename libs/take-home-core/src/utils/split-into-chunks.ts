@@ -4,4 +4,4 @@ export const splitIntoChunks = <T>(array: T[], chunkSize: number): T[][] => {
         chunks.push(array.slice(i, i + chunkSize));
     }
     return chunks;
-}
+};

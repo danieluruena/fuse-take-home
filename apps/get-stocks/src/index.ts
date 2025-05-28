@@ -1,4 +1,4 @@
-import { AxiosClient, StocksDynamoDBRepository, PinoLogger } from '@shared/take-home-core';
+import { AxiosClient, StocksDynamoDBRepository, PinoLogger } from '@danieluruena/take-home-core';
 import { FetchAndStoreStocksUseCase } from './application/use-cases/fetch-and-store-stocks';
 
 const logger = new PinoLogger();

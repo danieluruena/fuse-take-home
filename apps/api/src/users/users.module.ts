@@ -4,8 +4,9 @@ import { UsersService } from './users.service';
 import {
   BcryptEncryptor,
   PinoLogger,
+  PortfolioDynamoDBRepository,
   UsersDynamoDBRepository,
-} from '@shared/take-home-core';
+} from '@danieluruena/take-home-core';
 import { TOKENS } from '../shared/tokens';
 
 @Module({
@@ -14,6 +15,10 @@ import { TOKENS } from '../shared/tokens';
     UsersService,
     { provide: TOKENS.USERS_REPOSITORY, useClass: UsersDynamoDBRepository },
     { provide: TOKENS.ENCRYPTION_PROVIDER, useClass: BcryptEncryptor },
+    {
+      provide: TOKENS.PORTFOLIO_REPOSITORY,
+      useClass: PortfolioDynamoDBRepository,
+    },
     { provide: TOKENS.LOGGER, useClass: PinoLogger },
   ],
 })

@@ -138,3 +138,5 @@ dist
 .aws-sam/
 .volumes/
 .vscode/
+**/*/.npmrc
+**/*/*.env

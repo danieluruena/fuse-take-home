@@ -8,7 +8,7 @@ import { UserModule } from './users/users.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../../envs/local.env',
+      envFilePath: '.env',
     }),
     StocksModule,
     AuthModule,

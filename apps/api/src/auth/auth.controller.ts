@@ -6,9 +6,10 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
+import { Logger } from '@danieluruena/take-home-core';
 import { AuthService } from './auth.service';
-import { TOKENS } from 'src/shared/tokens';
-import { Logger } from '@shared/take-home-core';
+import { TOKENS } from '../shared/tokens';
+import { ApiRequest, LoginData } from '../shared/types';
 
 @Controller('auth')
 export class AuthController {
@@ -19,10 +20,7 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login(
-    @Req() request: Request,
-    @Body() body: { email: string; password: string },
-  ) {
+  async login(@Req() request: ApiRequest, @Body() body: LoginData) {
     const { email, password } = body;
 
     if (!email || !password) {

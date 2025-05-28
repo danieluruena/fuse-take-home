@@ -4,13 +4,15 @@ import {
     PutItemCommand, 
     GetItemCommandInput,
     GetItemCommandOutput,
-    GetItemCommand 
-} from "@aws-sdk/client-dynamodb";
-import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { PortfolioRepository } from "../../domain/ports/repository";
-import { getPortfolioTableName, isLocalEnv } from "../../utils/environment-variables";
-import { Portfolio } from "../../domain/entities/portfolio";
-import { GetOperationFailed, InsertOperationFailed, ItemNotFoundException } from "../../domain/exceptions/database-exceptions";
+    GetItemCommand,
+    DeleteItemCommandInput,
+    DeleteItemCommand
+} from '@aws-sdk/client-dynamodb';
+import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
+import { PortfolioRepository } from '../../domain/ports/repository';
+import { getPortfolioTableName, isLocalEnv } from '../../utils/environment-variables';
+import { Portfolio } from '../../domain/entities/portfolio';
+import { DeleteOperationFailed, GetOperationFailed, InsertOperationFailed, ItemNotFoundException, UpdateOperationFailed } from '../../domain/exceptions/database-exceptions';
 
 export class PortfolioDynamoDBRepository implements PortfolioRepository {
     private readonly client: DynamoDBClient;
@@ -44,7 +46,7 @@ export class PortfolioDynamoDBRepository implements PortfolioRepository {
         }
     }
 
-    async getPortfolio(userId: string): Promise<Portfolio> {
+    async getPortfolio(userId: string): Promise<Portfolio | undefined> {
         const params: GetItemCommandInput = {
             TableName: this.tableName,
             Key: marshall({ userId})
@@ -53,12 +55,33 @@ export class PortfolioDynamoDBRepository implements PortfolioRepository {
         try {
             const response: GetItemCommandOutput = await this.client.send(new GetItemCommand(params));
             if (!response.Item) {
-                throw new ItemNotFoundException(`Portfolio for user ${userId} not found`);
+                return;
             }
 
             return unmarshall(response.Item) as Portfolio;
         } catch (error) {
             throw new GetOperationFailed();
+        }
+    }
+
+    async deletePortfolio(userId: string): Promise<void> {
+        const params: DeleteItemCommandInput = {
+            TableName: this.tableName,
+            Key: marshall({ userId})
+        };
+
+        try {
+            await this.client.send(new DeleteItemCommand(params));
+        } catch (error) {
+            throw new DeleteOperationFailed();
+        }
+    }
+
+    async updatePortfolio(portfolio: Portfolio): Promise<void> {
+        try {
+            return await this.savePortfolio(portfolio);
+        } catch (error) {
+            throw new UpdateOperationFailed(portfolio);
         }
     }
 }

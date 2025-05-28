@@ -1,0 +1,11 @@
+node_modules
+.gitignore
+.git
+.prettierrc
+.npmrc
+eslint.config.mjs
+nest-cli.json
+README.md
+dist
+test
+Dockerfile

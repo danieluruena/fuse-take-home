@@ -6,10 +6,10 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Logger } from '@danieluruena/take-home-core';
 import { UsersService } from './users.service';
-import { TOKENS } from 'src/shared/tokens';
-import { Logger } from '@shared/take-home-core';
+import { TOKENS } from '../shared/tokens';
+import { ApiRequest, NewUserData } from '../shared/types';
 
 @Controller('user')
 export class UsersController {
@@ -20,10 +20,7 @@ export class UsersController {
   ) {}
 
   @Post('signup')
-  async signup(
-    @Req() request: Request,
-    @Body() body: { email: string; password: string },
-  ) {
+  async signup(@Req() request: ApiRequest, @Body() body: NewUserData) {
     const { email, password } = body;
 
     if (!email || !password) {

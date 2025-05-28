@@ -1,6 +1,8 @@
 {
     "GetStocksFunction": {
         "STOCKS_API_URL": "https://api.challenge.fusefinance.com",
-        "STOCKS_API_KEY": "fake_api_key"
+        "STOCKS_API_KEY": "fake_api_key",
+        "STOCKS_PATH": "/stocks",
+        "BUY_STOCKS_PATH": "/stocks/{symbol}/buy"
     }
 }

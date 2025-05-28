@@ -6,6 +6,8 @@ import {
     PutItemCommand,
     ScanCommand,
     ScanCommandInput,
+    GetItemCommandInput,
+    GetItemCommand,
 } from '@aws-sdk/client-dynamodb';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { StocksRepository } from '../../domain/ports/repository';
@@ -95,6 +97,24 @@ export class StocksDynamoDBRepository implements StocksRepository {
             return {
                 items: stocks
             }
+        } catch (error) {
+            throw new GetOperationFailed();
+        }
+    }
+
+    async getStock(symbol: string): Promise<Stock | undefined> {
+        const params: GetItemCommandInput ={
+            TableName: this.tableName,
+            Key: marshall({ symbol })
+        };
+
+        try {
+            const results = await this.client.send(new GetItemCommand(params));
+            if (!results.Item) {
+                return undefined
+            }
+
+            return unmarshall(results.Item) as Stock;
         } catch (error) {
             throw new GetOperationFailed();
         }

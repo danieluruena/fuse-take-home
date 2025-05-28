@@ -4,4 +4,6 @@ export const TOKENS = {
   USERS_REPOSITORY: Symbol('UsersRepository'),
   ENCRYPTION_PROVIDER: Symbol('EncryptionProvider'),
   LOGGER: Symbol('Logger'),
+  HTTP_CLIENT: Symbol('HttpClient'),
+  TRANSACTIONS_REPOSITORY: Symbol('TransactionsRepository'),
 };
